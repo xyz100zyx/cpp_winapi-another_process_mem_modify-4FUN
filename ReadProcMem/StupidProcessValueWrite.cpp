@@ -1,4 +1,5 @@
 #include "StupidProcessValueWrite.h"
+#include "ConsoleLogger.h"
 
 #include <iostream>
 #include <windows.h>
@@ -27,21 +28,21 @@ void WriteProcessMemoryStupid() {
 
     if (hProcess == NULL) {
 
-        std::cerr << "Не удалось открыть процесс ;(" << std::endl;
+        ConsoleLogger::LOG_PROCESS_NOT_OPENED();
         throw std::logic_error("hProcess == NULL");
     }
 
-    std::cout << "Процесс открыт ;)" << std::endl;
+    ConsoleLogger::LOG_PROCESS_OPENED();
 
     int valueToChange;
     SIZE_T bytesRead;
 
 
     if (ReadProcessMemory(hProcess, targetAddress, &valueToChange, sizeof(valueToChange), &bytesRead)) {
-        std::cout << "Значение переменной до изменения = " << valueToChange << std::endl;
+        ConsoleLogger::LOG_VAL_BEFORE_CHANGE(valueToChange);
     }
     else {
-        std::cerr << "Не удалось прочитать переменную ;(: " << GetLastError() << std::endl;
+        ConsoleLogger::CANT_READ_VAR_VAL_ON_MEM_ADDR();
     }
 
     SIZE_T bytesWritten;
